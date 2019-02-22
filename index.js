@@ -16,6 +16,12 @@ const knex = require('knex')({
   }
 })
 
+app.get('/', async (req, res) => {
+  res.send({
+    message: 'learn-sql'
+  })
+})
+
 app.get('/users', async (req, res) => {
   res.send({
     message: 'List of all users',
@@ -35,18 +41,20 @@ app.get('/users/:id', async (req, res) => {
 
 app.post('/users', async (req, res) => {
   res.send({
-    message: 'add user',
+    message: 'Created new user',
     users: await knex('users')
-      .insert([
-        { id: Number(req.body.id), name: req.body.name, email: req.body.email }
-      ])
+      .insert({
+        name: req.body.name,
+        email: req.body.email
+      })
       .from('users')
   })
 })
 
 app.delete('/users/:id', async (req, res) => {
   res.send({
-    message: 'list users by id',
+    message: 'Deleted one user by id',
+    id: Number(req.params.id),
     users: await knex
       .select()
       .from('users')
@@ -56,14 +64,17 @@ app.delete('/users/:id', async (req, res) => {
 })
 
 app.put('/users/:id', async (req, res) => {
-  console.log(req.params.id)
   res.send({
-    message: 'list users by id',
+    message: 'Updated user by id',
+    id: Number(req.params.id),
     users: await knex
       .select()
       .from('users')
       .where('id', Number(req.params.id))
-      .update({ name: req.body.name, email: req.body.email })
+      .update({
+        name: req.body.name,
+        email: req.body.email
+      })
   })
 })
 
