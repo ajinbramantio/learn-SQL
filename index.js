@@ -1,42 +1,69 @@
 require('dotenv').config()
 const express = require('express')
-const sqlite = require('sqlite')
-
+const bodyParser = require('body-parser')
 const app = express()
-const port = process.env.PORT || 8000
-const dbPromise = sqlite.open(process.env.DB_PATH, { Promise })
+const port = 8000
+
+app.use(bodyParser.json())
+
+const knex = require('knex')({
+  client: 'mysql2',
+  connection: {
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || 'yourpassword',
+    database: process.env.DB_DATABASE || 'yourdatabasename'
+  }
+})
 
 app.get('/users', async (req, res) => {
-  const db = await dbPromise
-  const users = await db.all('SELECT * FROM users')
   res.send({
-    message: 'Get all users',
-    users: users
+    message: 'List of all users',
+    users: await knex.select().from('users')
   })
 })
 
 app.get('/users/:id', async (req, res) => {
-  const db = await dbPromise
-  const user = await db.get(`SELECT * FROM users WHERE id = ${req.params.id}`)
+  res.send({
+    message: 'list users by id',
+    users: await knex
+      .select()
+      .from('users')
+      .where('id', Number(req.params.id))
+  })
+})
 
-  if (user) {
-    res.send({
-      message: 'Get one user',
-      user: user
-    })
-  } else {
-    res.send({
-      message: 'Failed to get one user'
-    })
-  }
+app.post('/users', async (req, res) => {
+  res.send({
+    message: 'add user',
+    users: await knex('users')
+      .insert([
+        { id: Number(req.body.id), name: req.body.name, email: req.body.email }
+      ])
+      .from('users')
+  })
 })
 
 app.delete('/users/:id', async (req, res) => {
-  const db = await dbPromise
-  const user = await db.get(`DELETE FROM users WHERE id = ${req.params.id}`)
-
   res.send({
-    user: user
+    message: 'list users by id',
+    users: await knex
+      .select()
+      .from('users')
+      .where('id', Number(req.params.id))
+      .del()
+  })
+})
+
+app.put('/users/:id', async (req, res) => {
+  console.log(req.params.id)
+  res.send({
+    message: 'list users by id',
+    users: await knex
+      .select()
+      .from('users')
+      .where('id', Number(req.params.id))
+      .update({ name: req.body.name, email: req.body.email })
   })
 })
 

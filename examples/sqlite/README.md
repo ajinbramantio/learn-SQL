@@ -2,11 +2,11 @@
 
 Table:
 
-| id  | name   | email            |
-| --- | ------ | ---------------- |
-| 1   | Haidar | haidar@gmail.com |
-| 2   | Hanif  | hanif@gmail.com  |
-| 3   | Impact | impact@gmail.com |
+| id  | name      | email               |
+| --- | --------- | ------------------- |
+| 1   | Fadhila   | fadhila@gmail.com   |
+| 2   | Fajrin    | fajrin@gmail.com    |
+| 3   | Bramantio | bramantio@gmail.com |
 
 SQL Create Table:
 
